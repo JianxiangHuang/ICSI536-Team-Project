@@ -1,4 +1,4 @@
-
+# this class is used to store the tree structure as the decision tree
 class TreeNode:
     def __init__(self, label=None,position=None,leftnode=None, rightnode=None, ):
         self.label=label
@@ -19,20 +19,13 @@ class TreeNode:
         return self.rightnode
 
     def print_tree(self,node, level=0):
-        # 基础终止条件：当节点为空时，返回
         if node is None:
             return
-
-        # 打印当前节点的内容，显示深度和节点的标签或位置
-        indent = " " * (level * 4)  # 根据当前深度添加缩进
+        indent = " " * (level * 4)
         print(f"{indent}Node (Label: {node.label}, Position: {node.position})")
-
-        # 打印左子树
         if node.leftnode is not None:
             print(f"{indent}Left:")
             self.print_tree(node.leftnode, level + 1)
-
-        # 打印右子树
         if node.rightnode is not None:
             print(f"{indent}Right:")
             self.print_tree(node.rightnode, level + 1)
