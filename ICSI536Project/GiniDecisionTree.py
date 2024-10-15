@@ -3,113 +3,151 @@ import numpy
 from TreeNode import TreeNode
 
 
+# this class is the Gini version decision tree algorithm class
 class GiniDecisionTree:
-    def __init__(self, dataset, label_index, max_deep=5):
-        self.dataset = dataset
-        self.label = label_index
-        self.max_deep=max_deep
+    # this class need to initialize
+    # dateset is the training set
+    # max_deep is how deep the tree is allowed to grow, default is 5
+    def __init__(self, max_deep=5):
+        self.max_deep = max_deep
 
+    # this method is used to calculate ginivalue
     def calculate_ginivalue(self, dataset):
-        labels=dataset[:,self.label]
-        total=len(labels)
-        # 使用 numpy.unique 计算每个标签的计数
+        # separate the labels part
+        labels = dataset[:, -1]
+        # calculate the number of data exist in this dataset
+        total = len(labels)
+        # use numpy.unique to calculate the number of each kind of label within the dataset
         unique_labels, label_counts = numpy.unique(labels, return_counts=True)
-
-        probabilities=label_counts/total
-        gini_value=1-numpy.sum(numpy.square(probabilities))
-        print(f"total: {total}\nlabel_counts: {label_counts}\nprobabilities: {probabilities}\ngini: {gini_value}")
+        # calculate the proportion of each labels
+        probabilities = label_counts / total
+        # calculate the Gini value
+        gini_value = 1 - numpy.sum(numpy.square(probabilities))
+        # print(f"total: {total}\nlabel_counts: {label_counts}\nprobabilities: {probabilities}\ngini: {gini_value}")
         return gini_value
 
-    def spliting(self, dataset, gini_base=1):
-        timer=0;
-        dict_={}
-        total=dataset.shape[0]
-        for j in range(dataset.shape[1]-1):
-            #  获取特征 dataset[:, j] 中所有唯一值并按升序排列
-            range_=self.getRange(sorted(set(dataset[:,j])))
+    # this method split the current node into two child nodes
+    # this method try every possible way to split the current dataset and find the one with smallest gini value
+    # and then check if this split result a gini gain compair with its parent's gini value
+    # gini_base is require to input, use the default value 1 only for root of the tree
+    def spliting(self, dataset):
+        # timer = 0;
+        # used to store every possible split's position and gini value
+        # use position as key and gini as value
+        # position is a tuple, first element is the feature used to split and the second element is the value to compare
+        dict_ = {}
+        # the number of data existed in the dataset
+        total = dataset.shape[0]
+
+        # for a 4 features dataset, this loop will run 100 times to find the best way to split the dataset
+        # try every feature, exclude the label column
+        for j in range(dataset.shape[1] - 1):
+            # get the range list that will use to split and get it's gini value
+            # use getRange() method
+            range_ = self.getRange(dataset[:, j])
+            # try every value in the range list
             for i in range_:
+                # get the left and right array that depand on the value
                 left_array = dataset[dataset[:, j] < i]
                 right_array = dataset[dataset[:, j] >= i]
-                print(f"left_array for j {j} and i {i} is :{left_array}")
-                print(f"right_array for j {j} and i {i} is :{right_array}")
-                timer=timer+1
-                print(timer)
-                left_ratio=left_array.shape[0]/total
-                right_ratio=right_array.shape[0]/total
-                gini_total= left_ratio * self.calculate_ginivalue(left_array) +right_ratio* self.calculate_ginivalue(right_array)
-                dict_[(j,i)]=gini_total
+                # print(f"left_array for j {j} and i {i} is :{left_array}")
+                # print(f"right_array for j {j} and i {i} is :{right_array}")
+                # timer = timer + 1
+                # print(timer)
+                # calculate the proportion ratio of the two array
+                left_ratio = left_array.shape[0] / total
+                right_ratio = right_array.shape[0] / total
+                # calculate the gini total which is the weighted total gini value of the two array
+                gini_total = left_ratio * self.calculate_ginivalue(left_array) + right_ratio * self.calculate_ginivalue(
+                    right_array)
+                # record it into the dictionary
+                dict_[(j, i)] = gini_total
 
-        min_gini_position=min(dict_, key=dict_.get)
-        min_gini=dict_[min_gini_position]
-        print(f"min gini is {min_gini} at position {min_gini_position}")
+        # find the smallest gini value and it's position in this dictionary
+        min_gini_position = min(dict_, key=dict_.get)
+        min_gini = dict_[min_gini_position]
+        # print(f"min gini is {min_gini} at position {min_gini_position}")
 
-        gini_current=min_gini
-        gini_gain=gini_base-gini_current
-        gini_base=gini_current
+        # calculate the gini gain
+        gini_current = min_gini
+        gini_base = self.calculate_ginivalue(dataset)
+        gini_gain = gini_base - gini_current
 
-        if gini_gain>0:
-            j, i=min_gini_position[0], min_gini_position[1]
+        # if it is beneficial with a positive gini gain, then return the split info
+        if gini_gain > 0:
+            j, i = min_gini_position[0], min_gini_position[1]
             left_array = dataset[dataset[:, j] < i]
             right_array = dataset[dataset[:, j] >= i]
-            return min_gini_position, gini_base,left_array, right_array
+            return min_gini_position, left_array, right_array
         else:
-            return None, None, None, None
+            return None, None, None
 
-
+    # this method return a list that used to split by a feature
+    # the range_ parameter is the feature column
     def getRange(self, range_):
-        # 计算 range_ 的最小值和最大值
+        range_ = sorted(set(range_))
+        # find the max and min value within the ordered list
         min_value = range_[0]
         max_value = range_[-1]
-        # 使用 np.linspace 生成 25 份等间隔的数列
+        # use linspace to generate 25 equal spacing split point
         split_points = numpy.linspace(min_value, max_value, 25)
-        # 将数列的值保留到小数点后一位，并去重
+        # round it to 1 decimal and drop duplicate
         split_points_rounded = numpy.unique(numpy.round(split_points, 1))
         return split_points_rounded
 
-    def generate_model(self, dataset, gini_base=1, current_deep=1, nodes=TreeNode()):
-        min_gini_position, gini_base,left_array, right_array =self.spliting(dataset, gini_base)
-        if min_gini_position is not None:
-            left_median_label_value=numpy.median(left_array[:,-1])
-            nodes.set_leftnode(TreeNode(left_median_label_value,min_gini_position))
-            right_median_label_value=numpy.median(right_array[:,-1])
-            nodes.set_rightnode(TreeNode(right_median_label_value,min_gini_position))
-        else:
-            return
-
-        if current_deep<=self.max_deep and len(set(left_array.flatten()))!=1 and len(set(left_array[:,self.label]))!=1:
-            self.generate_model(left_array, gini_base, current_deep+1,nodes.get_leftnode())
-        if current_deep<=self.max_deep and len(set(right_array.flatten()))!=1 and len(set(right_array[:,self.label]))!=1:
-            self.generate_model(right_array, gini_base, current_deep+1,nodes.get_rightnode())
+    # recursively generate the tree until the tree reach the max deep or complete separated
+    # dataset is the only required input, and it is the training dataset
+    def generate_model(self, dataset, current_deep=1, nodes=TreeNode()):
+        # record the median label in this node
+        median_label_value = numpy.median(dataset[:, -1])
+        nodes.label = median_label_value
+        # check if reached the max deep
+        if current_deep <= self.max_deep:
+            # split the current dataset
+            min_gini_position, left_array, right_array = self.spliting(dataset)
+            # print(f"dataset is \n{dataset}\n")
+            # print((f"left_array is \n{left_array}\n"))
+            # print(f"right_array is \n{right_array}\n")
+            # if it is not None, record position into this Node and generate left and right next level nodes
+            if min_gini_position is not None:
+                nodes.position = min_gini_position
+                leftnode = TreeNode()
+                nodes.set_leftnode(leftnode)
+                self.generate_model(left_array, current_deep + 1, leftnode)
+                rightnode = TreeNode()
+                nodes.set_rightnode(rightnode)
+                self.generate_model(right_array, current_deep + 1, rightnode)
+            else:
+                return
         return nodes
 
-
-    def test_model(self, model,dataset):
-        score=0;
-        total=dataset.shape[0]
-
+    # this method is used to test the test set
+    def test_model(self, model, dataset):
+        score = 0;
+        total = dataset.shape[0]
+        # test each row of data in the test set
         for unit in dataset:
-            actual_label=unit[-1]
-            print("test unit is ")
-            predicted_label=self.test_unit(model,unit[:-1])
-            if(predicted_label == actual_label):
-                print(f"predicted lable is {predicted_label} and actual label is {actual_label}")
-                score+=1
+            actual_label = unit[-1]
+            predicted_label = self.test_unit(model, unit[:-1])
+            if (predicted_label == actual_label):
+                # print(f"predicted label is {predicted_label} and actual label is {actual_label}")
+                score += 1
+        # calculate the accuracy and
+        accuracy = score / total
+        print(f"My accuracy is : {accuracy * 100:.2f}%")
 
-        accuarcy=score/total
-        print(f"accuracy is : {accuarcy * 100:.2f}%")
-
-
+    # this method is used by method test_model to check if the prediction is correct or not
+    # it returns the prediction or Recursion until get the result
     def test_unit(self, model, test_unit):
 
-        # 如果当前节点是叶子节点，返回该节点的标签
-        if model.leftnode is None and model.rightnode is None:
+        # if reach the leaf of the tree, return the result
+        if model.position is None:
             return model.label
 
-        left_node=model.get_leftnode()
-
-        feature_index, feature_value=left_node.position
-        print(f"index is {feature_index}, value is {feature_value}")
-        print(test_unit)
+        # if it is not the leaf, decide go left or right
+        feature_index, feature_value = model.position
+        # print(f"index is {feature_index}, value is {feature_value}")
+        # print(test_unit)
         if test_unit[feature_index] < feature_value:
             return self.test_unit(model.leftnode, test_unit)
         else:
