@@ -1,7 +1,8 @@
 # this class is used to store the tree structure as the decision tree
 class TreeNode:
-    def __init__(self, label=None,position=None,leftnode=None, rightnode=None, ):
+    def __init__(self, label=None,position=None,leftnode=None, rightnode=None,proportion=None ):
         self.label=label
+        self.proportion=proportion
         self.position = position
         self.leftnode=leftnode
         self.rightnode=rightnode
@@ -22,7 +23,7 @@ class TreeNode:
         if node is None:
             return
         indent = " " * (level * 4)
-        print(f"{indent}Node (Label: {node.label}, Position: {node.position})")
+        print(f"{indent}Node (Label: {node.label}, Position: {node.position}, Proportion: {node.proportion})")
         if node.leftnode is not None:
             print(f"{indent}Left:")
             self.print_tree(node.leftnode, level + 1)

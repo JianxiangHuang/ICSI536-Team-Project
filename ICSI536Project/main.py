@@ -47,7 +47,7 @@ def generate_noisy_data(num_samples=100):
     train_set = dataset[:80]  # 前80个样本用于训练
     test_set = dataset[80:]  # 剩余20个样本用于测试
     # 使用 GiniDecisionTree 进行训练和测试
-    model = GiniDecisionTree()
+    model = GiniDecisionTree(train_set)
     nodes = model.generate_model(train_set)
     nodes.print_tree(nodes)  # 打印生成的决策树结构
     model.test_model(nodes, test_set)  # 测试模型
@@ -60,13 +60,13 @@ def generate_noisy_data(num_samples=100):
 
 if __name__ == '__main__':
     # split the dataset into train set and test set
-    train_set, test_set= ProcessDataSet.split_dataset_to_traindata_and_testdata("datasets/iris_dataset.csv",0.1,50)
+    train_set, test_set= ProcessDataSet.split_dataset_to_traindata_and_testdata("datasets/creditcard.csv",0.1,50)
 
     # ProcessDataSet.print_dataset(train_set,"Train Dataset")
     # ProcessDataSet.print_dataset(test_set,"Test Dataset")
 
     # train the model
-    model=GiniDecisionTree(5)
+    model=GiniDecisionTree(train_set, 5)
     nodes=model.generate_model(train_set)
 
     #print the trained model

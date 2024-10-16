@@ -8,9 +8,10 @@ class GiniDecisionTree:
     # this class need to initialize
     # dateset is the training set
     # max_deep is how deep the tree is allowed to grow, default is 5
-    def __init__(self, max_deep=5):
+    def __init__(self,dataset, max_deep=5):
         self.max_deep = max_deep
-
+        self.dataset=dataset
+        self.unique_labels = numpy.unique(dataset[:,-1])
     # this method is used to calculate ginivalue
     def calculate_ginivalue(self, dataset):
         # separate the labels part
@@ -99,8 +100,10 @@ class GiniDecisionTree:
     # dataset is the only required input, and it is the training dataset
     def generate_model(self, dataset, current_deep=1, nodes=TreeNode()):
         # record the median label in this node
-        median_label_value = numpy.median(dataset[:, -1])
+        labels=dataset[:, -1]
+        median_label_value = numpy.median(labels)
         nodes.label = median_label_value
+        nodes.proportion=self.calculate_label_distribution(labels)
         # check if reached the max deep
         if current_deep <= self.max_deep:
             # split the current dataset
@@ -120,6 +123,15 @@ class GiniDecisionTree:
             else:
                 return
         return nodes
+
+    # this method is used by generate_model to calculate the label distribution within this node
+    def calculate_label_distribution(self, dataset):
+        label_distribution = {label: 0 for label in self.unique_labels}
+        unique_labels, label_counts = numpy.unique(dataset, return_counts=True)
+        for label, count in zip(unique_labels, label_counts):
+            label_distribution[label] = count
+        return label_distribution
+
 
     # this method is used to test the test set
     def test_model(self, model, dataset):
