@@ -19,6 +19,7 @@ class TreeNode:
     def get_rightnode(self):
         return self.rightnode
 
+
     def print_tree(self,node, level=0):
         if node is None:
             return

@@ -8,10 +8,11 @@ class GiniDecisionTree:
     # this class need to initialize
     # dateset is the training set
     # max_deep is how deep the tree is allowed to grow, default is 5
-    def __init__(self,dataset, max_deep=5):
+    def __init__(self, dataset, max_deep=5):
         self.max_deep = max_deep
-        self.dataset=dataset
-        self.unique_labels = numpy.unique(dataset[:,-1])
+        self.dataset = dataset
+        self.unique_labels = numpy.unique(dataset[:, -1])
+
     # this method is used to calculate ginivalue
     def calculate_ginivalue(self, dataset):
         # separate the labels part
@@ -98,12 +99,15 @@ class GiniDecisionTree:
 
     # recursively generate the tree until the tree reach the max deep or complete separated
     # dataset is the only required input, and it is the training dataset
-    def generate_model(self, dataset, current_deep=1, nodes=TreeNode()):
+    def generate_model(self, dataset, current_deep=1, nodes=None):
+        if nodes is None:
+            nodes = TreeNode()
         # record the median label in this node
-        labels=dataset[:, -1]
+        labels = dataset[:, -1]
         median_label_value = numpy.median(labels)
+        # print("label is "+str(median_label_value))
         nodes.label = median_label_value
-        nodes.proportion=self.calculate_label_distribution(labels)
+        nodes.proportion = self.calculate_label_distribution(labels)
         # check if reached the max deep
         if current_deep <= self.max_deep:
             # split the current dataset
@@ -132,23 +136,36 @@ class GiniDecisionTree:
             label_distribution[label] = count
         return label_distribution
 
-
     # this method is used to test the test set
+    # def test_model(self, model, dataset):
+    #     score = 0;
+    #     total = dataset.shape[0]
+    #     # test each row of data in the test set
+    #     for unit in dataset:
+    #         actual_label = unit[-1]
+    #         predicted_label = self.test_unit(model, unit[:-1])
+    #         if (predicted_label == actual_label):
+    #             # print(f"predicted label is {predicted_label} and actual label is {actual_label}")
+    #             score += 1
+    #     # calculate the accuracy and
+    #     accuracy = score / total
+    #     print(f"My accuracy is : {accuracy * 100:.2f}%")
+
     def test_model(self, model, dataset):
-        score = 0;
+        score = 0
         total = dataset.shape[0]
         # test each row of data in the test set
         for unit in dataset:
             actual_label = unit[-1]
             predicted_label = self.test_unit(model, unit[:-1])
-            if (predicted_label == actual_label):
-                # print(f"predicted label is {predicted_label} and actual label is {actual_label}")
+            print(f"actual label is {actual_label} and the predicted label is {predicted_label}")
+            if predicted_label == actual_label:
                 score += 1
         # calculate the accuracy and
-        accuracy = score / total
-        print(f"My accuracy is : {accuracy * 100:.2f}%")
+        accuracy = score / total*100
+        print(f"My accuracy is : {accuracy:.2f}%")
 
-    # this method is used by method test_model to check if the prediction is correct or not
+    # this method is used by method test_model
     # it returns the prediction or Recursion until get the result
     def test_unit(self, model, test_unit):
 

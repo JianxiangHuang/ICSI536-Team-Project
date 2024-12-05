@@ -1,13 +1,20 @@
 import numpy
+from sklearn.ensemble import RandomForestClassifier
 
 from GiniDecisionTree import GiniDecisionTree
 from ProcessDataSet import ProcessDataSet
 
 from sklearn import tree
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 
-#use sklearn to verify the dataset
-def verify():
+from graphviz import Digraph
+
+from RandomForest import RandomForest
+
+
+# use sklearn to verify the dataset
+# print the accuracy of sklearn decision tree algorithm performance on the dataset
+def sklearn_verify_decisiontree():
     clf = tree.DecisionTreeClassifier()
     clf = clf.fit(train_set[:, :-1], train_set[:, -1])
     tree.plot_tree(clf)
@@ -21,68 +28,84 @@ def verify():
         if features[i] != -2:  # -2 表示这是叶子节点，不再进行划分
             split_structure.append((features[i], thresholds[i]))
     # 打印结构 [(特征索引, 阈值), ...]
-    print(split_structure)
-    y_pred = clf.predict(test_set[:,:-1])
-    accuracy = accuracy_score(test_set[:,-1], y_pred)
-    print(f"Test Accuracy: {accuracy * 100:.2f}%")
-
-
-# 模拟 iris 数据集
-# 随机生成数据集的函数
-def generate_noisy_data(num_samples=100):
-    numpy.random.seed(None)  # 固定随机种子以便复现结果
-    # 特征1: 随机生成 [0, 10) 之间的浮点数
-    feature1 = numpy.random.uniform(0, 10, num_samples)
-    # 特征2: 随机生成 [0, 100) 之间的浮点数
-    feature2 = numpy.random.uniform(0, 100, num_samples)
-    # 标签: 基于特征1的值进行分类，若 feature1 > 5，则标签为1，否则为0
-    labels = (feature1 > 5).astype(int)
-    # 为10%的样本标签添加噪声，翻转标签（1变0，0变1）
-    num_noisy_samples = int(0.1 * num_samples)
-    noise_indices = numpy.random.choice(num_samples, num_noisy_samples, replace=False)
-    labels[noise_indices] = 1 - labels[noise_indices]  # 标签翻转
-    # 将数据合并成一个数组 (特征1, 特征2, 标签)
-    dataset = numpy.column_stack((feature1, feature2, labels))
-    # 将数据集拆分为训练集和测试集 (80%训练, 20%测试)
-    train_set = dataset[:80]  # 前80个样本用于训练
-    test_set = dataset[80:]  # 剩余20个样本用于测试
-    # 使用 GiniDecisionTree 进行训练和测试
-    model = GiniDecisionTree(train_set)
-    nodes = model.generate_model(train_set)
-    nodes.print_tree(nodes)  # 打印生成的决策树结构
-    model.test_model(nodes, test_set)  # 测试模型
-    clf = tree.DecisionTreeClassifier()
-    clf = clf.fit(train_set[:, :-1], train_set[:, -1])
+    # print(split_structure)
     y_pred = clf.predict(test_set[:, :-1])
     accuracy = accuracy_score(test_set[:, -1], y_pred)
-    print(f"Test Accuracy: {accuracy * 100:.2f}%")
+    print(f"Sklearn Accuracy: {accuracy * 100:.2f}%")
 
 
+# use sklearn to verify the random forest
+# print the accuracy of sklearn random forest algorithm performance on the dataset
+def sklearn_verify_randomforest():
+    rf_classifier = RandomForestClassifier()
+    rf_classifier.fit(train_set[:, :-1], train_set[:, -1])
+    y_pred = rf_classifier.predict(test_set[:, :-1])
+    accuracy = accuracy_score(test_set[:, -1], y_pred)*100
+    print(f"Sklearn Accuracy: {accuracy:.2f}%")
+
+
+# this method is used to draw the decision tree, not important for this project's two models
+def add_nodes_edges(dot, node):
+    if node is not None:
+        dot.node(str(id(node)), f"Label: {node.label}, \nPosition: {node.position}, \nProportion: {node.proportion})",
+                 shape='box')
+
+        if node.leftnode:
+            dot.node(str(id(node.leftnode)),
+                     f"Label: {node.leftnode.label}, \nPosition: {node.leftnode.position}, \nProportion: {node.leftnode.proportion})",
+                     shape='box')
+            dot.edge(str(id(node)), str(id(node.leftnode)))
+            add_nodes_edges(dot, node.leftnode)
+
+        if node.rightnode:
+            dot.node(str(id(node.rightnode)),
+                     f"Label: {node.rightnode.label}, \nPosition: {node.rightnode.position}, \nProportion: {node.rightnode.proportion})",
+                     shape='box')
+            dot.edge(str(id(node)), str(id(node.rightnode)))
+            add_nodes_edges(dot, node.rightnode)
+
+
+# run the main method to verify the algorithm
+# I used two dataset in this project, iris_dataset.csv and creditcard2.csv
+# unmark the code section to run the program
 if __name__ == '__main__':
+
+    # this part is used to generate the decision tree for the dataset inputted
+
     # split the dataset into train set and test set
-    train_set, test_set= ProcessDataSet.split_dataset_to_traindata_and_testdata("datasets/creditcard.csv",0.1,50)
-
-    # ProcessDataSet.print_dataset(train_set,"Train Dataset")
-    # ProcessDataSet.print_dataset(test_set,"Test Dataset")
-
+    train_set, test_set = ProcessDataSet.split_dataset_to_traindata_and_testdata("datasets/iris_dataset.csv", 0.2)
     # train the model
-    model=GiniDecisionTree(train_set, 5)
-    nodes=model.generate_model(train_set)
-
-    #print the trained model
-    nodes.print_tree(nodes)
-
-    #test the model with the test set
+    model = GiniDecisionTree(train_set, 5)
+    nodes = model.generate_model(train_set)
+    # print the trained model
+    # nodes.print_tree(nodes)
+    # test the model with the test set
     model.test_model(nodes, test_set)
-
-    #verify the model by train the dataset with ML module and verify if get the similar result
-    verify()
-
-    #use random dataset to verify the model
-    # generate_noisy_data()
+    # verify the model by train the dataset with ML module and verify if get the similar result
+    sklearn_verify_decisiontree()
 
 
 
 
 
+    # this part is used to generate the random forest for the dataset inputted
 
+    # # split the dataset into train set and test set
+    # train_set, test_set = ProcessDataSet.split_dataset_to_traindata_and_testdata("datasets/iris_dataset.csv", 0.2)
+    # # train the model
+    # model = RandomForest(train_set, 100, 5)
+    # forest = model.generate_forest()
+    # # test the model with the test set
+    # model.predict(forest, test_set)
+    # # verify the model by train the dataset with ML module and verify if get the similar result
+    # sklearn_verify_randomforest()
+
+
+
+
+    # Not important
+
+    # draw the tree
+    # dot = Digraph()
+    # add_nodes_edges(dot, nodes)
+    # dot.render('tree2', view=True,format='png')

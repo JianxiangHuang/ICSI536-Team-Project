@@ -1,0 +1,117 @@
+digraph {
+	1816769267904 [label="Label: 1.0, 
+Position: (2, 2.0), 
+Proportion: {0.0: 44, 1.0: 46, 2.0: 45})" shape=box]
+	1816033349360 [label="Label: 0.0, 
+Position: None, 
+Proportion: {0.0: 44, 1.0: 0, 2.0: 0})" shape=box]
+	1816769267904 -> 1816033349360
+	1816033349360 [label="Label: 0.0, 
+Position: None, 
+Proportion: {0.0: 44, 1.0: 0, 2.0: 0})" shape=box]
+	1815293445280 [label="Label: 1.0, 
+Position: (2, 4.8), 
+Proportion: {0.0: 0, 1.0: 46, 2.0: 45})" shape=box]
+	1816769267904 -> 1815293445280
+	1815293445280 [label="Label: 1.0, 
+Position: (2, 4.8), 
+Proportion: {0.0: 0, 1.0: 46, 2.0: 45})" shape=box]
+	1816035840256 [label="Label: 1.0, 
+Position: (3, 1.7), 
+Proportion: {0.0: 0, 1.0: 41, 2.0: 1})" shape=box]
+	1815293445280 -> 1816035840256
+	1816035840256 [label="Label: 1.0, 
+Position: (3, 1.7), 
+Proportion: {0.0: 0, 1.0: 41, 2.0: 1})" shape=box]
+	1815998081952 [label="Label: 1.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 41, 2.0: 0})" shape=box]
+	1816035840256 -> 1815998081952
+	1815998081952 [label="Label: 1.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 41, 2.0: 0})" shape=box]
+	1816033829872 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 0, 2.0: 1})" shape=box]
+	1816035840256 -> 1816033829872
+	1816033829872 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 0, 2.0: 1})" shape=box]
+	1816033824304 [label="Label: 2.0, 
+Position: (3, 1.8), 
+Proportion: {0.0: 0, 1.0: 5, 2.0: 44})" shape=box]
+	1815293445280 -> 1816033824304
+	1816033824304 [label="Label: 2.0, 
+Position: (3, 1.8), 
+Proportion: {0.0: 0, 1.0: 5, 2.0: 44})" shape=box]
+	1816035320240 [label="Label: 1.5, 
+Position: (1, 2.7), 
+Proportion: {0.0: 0, 1.0: 4, 2.0: 4})" shape=box]
+	1816033824304 -> 1816035320240
+	1816035320240 [label="Label: 1.5, 
+Position: (1, 2.7), 
+Proportion: {0.0: 0, 1.0: 4, 2.0: 4})" shape=box]
+	1816008463552 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 0, 2.0: 2})" shape=box]
+	1816035320240 -> 1816008463552
+	1816008463552 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 0, 2.0: 2})" shape=box]
+	1815997800352 [label="Label: 1.0, 
+Position: (2, 5.1), 
+Proportion: {0.0: 0, 1.0: 4, 2.0: 2})" shape=box]
+	1816035320240 -> 1815997800352
+	1815997800352 [label="Label: 1.0, 
+Position: (2, 5.1), 
+Proportion: {0.0: 0, 1.0: 4, 2.0: 2})" shape=box]
+	1816036018032 [label="Label: 1.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 3, 2.0: 0})" shape=box]
+	1815997800352 -> 1816036018032
+	1816036018032 [label="Label: 1.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 3, 2.0: 0})" shape=box]
+	1816035162880 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 1, 2.0: 2})" shape=box]
+	1815997800352 -> 1816035162880
+	1816035162880 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 1, 2.0: 2})" shape=box]
+	1816035696208 [label="Label: 2.0, 
+Position: (2, 4.9), 
+Proportion: {0.0: 0, 1.0: 1, 2.0: 40})" shape=box]
+	1816033824304 -> 1816035696208
+	1816035696208 [label="Label: 2.0, 
+Position: (2, 4.9), 
+Proportion: {0.0: 0, 1.0: 1, 2.0: 40})" shape=box]
+	1816035701728 [label="Label: 2.0, 
+Position: (0, 6.0), 
+Proportion: {0.0: 0, 1.0: 1, 2.0: 2})" shape=box]
+	1816035696208 -> 1816035701728
+	1816035701728 [label="Label: 2.0, 
+Position: (0, 6.0), 
+Proportion: {0.0: 0, 1.0: 1, 2.0: 2})" shape=box]
+	1816034371600 [label="Label: 1.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 1, 2.0: 0})" shape=box]
+	1816035701728 -> 1816034371600
+	1816034371600 [label="Label: 1.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 1, 2.0: 0})" shape=box]
+	1816032171440 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 0, 2.0: 2})" shape=box]
+	1816035701728 -> 1816032171440
+	1816032171440 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 0, 2.0: 2})" shape=box]
+	1816032174560 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 0, 2.0: 38})" shape=box]
+	1816035696208 -> 1816032174560
+	1816032174560 [label="Label: 2.0, 
+Position: None, 
+Proportion: {0.0: 0, 1.0: 0, 2.0: 38})" shape=box]
+}
