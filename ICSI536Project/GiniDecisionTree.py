@@ -105,7 +105,6 @@ class GiniDecisionTree:
         # record the median label in this node
         labels = dataset[:, -1]
         median_label_value = numpy.median(labels)
-        # print("label is "+str(median_label_value))
         nodes.label = median_label_value
         nodes.proportion = self.calculate_label_distribution(labels)
         # check if reached the max deep
@@ -137,20 +136,6 @@ class GiniDecisionTree:
         return label_distribution
 
     # this method is used to test the test set
-    # def test_model(self, model, dataset):
-    #     score = 0;
-    #     total = dataset.shape[0]
-    #     # test each row of data in the test set
-    #     for unit in dataset:
-    #         actual_label = unit[-1]
-    #         predicted_label = self.test_unit(model, unit[:-1])
-    #         if (predicted_label == actual_label):
-    #             # print(f"predicted label is {predicted_label} and actual label is {actual_label}")
-    #             score += 1
-    #     # calculate the accuracy and
-    #     accuracy = score / total
-    #     print(f"My accuracy is : {accuracy * 100:.2f}%")
-
     def test_model(self, model, dataset):
         score = 0
         total = dataset.shape[0]
